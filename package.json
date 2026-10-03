@@ -1,0 +1,13 @@
+{
+  "name": "juice-shop-login-form",
+  "version": "1.0.0",
+  "description": "A simple login form with client-side and server-side validation plus bcrypt password hashing, built for a web security assignment.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.19.2"
+  }
+}

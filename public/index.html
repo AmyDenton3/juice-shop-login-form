@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Juicy Login</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f4f4f4; display: flex; justify-content: center; padding-top: 60px; }
+  .card { background: #fff; padding: 24px; width: 320px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+  h1 { font-size: 20px; margin-top: 0; }
+  label { display: block; margin: 12px 0 4px; font-size: 14px; }
+  input { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+  button { margin-top: 16px; width: 100%; padding: 10px; background: #d35400; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+  #msg { margin-top: 14px; font-size: 14px; min-height: 18px; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>Login</h1>
+    <label for="email">Email</label>
+    <input id="email" type="text" placeholder="you@example.com">
+    <label for="password">Password</label>
+    <input id="password" type="password" placeholder="at least 8 characters">
+    <button id="loginBtn">Log in</button>
+    <p id="msg"></p>
+  </div>
+
+<script>
+  const msg = document.getElementById('msg');
+
+  // Client-side validation: no empty fields, email must contain @,
+  // password must be at least 8 characters.
+  function clientValidate(email, password) {
+    if (!email.trim() || !password.trim()) return 'Please fill in both fields.';
+    if (!email.includes('@')) return 'Email must contain @.';
+    if (password.length < 8) return 'Password must be at least 8 characters.';
+    return null;
+  }
+
+  document.getElementById('loginBtn').addEventListener('click', async () => {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    const error = clientValidate(email, password);
+    if (error) {
+      msg.style.color = 'red';
+      // Using textContent instead of innerHTML means any script-looking input
+      // shows up as plain text and does not run.
+      msg.textContent = error;
+      return;
+    }
+
+    try {
+      const res = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+      msg.style.color = data.ok ? 'green' : 'red';
+      msg.textContent = data.message;
+    } catch (e) {
+      msg.style.color = 'red';
+      msg.textContent = 'Something went wrong talking to the server.';
+    }
+  });
+</script>
+</body>
+</html>
